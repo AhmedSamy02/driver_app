@@ -18,7 +18,7 @@ class UserLogin {
       return response.data['status'];
     } on DioException catch (e) {
       return e.response!.data['message'];
-    } on TimeoutException catch (e) {
+    } on TimeoutException {
       return 'Connection timeout Please check your internet connection';
     }
   }

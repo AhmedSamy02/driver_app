@@ -21,7 +21,7 @@ class MainApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.robotoTextTheme(),
       ),
-      initialRoute: kLoginScreen,
+      initialRoute: kHomeScreen,
       routes: {
         kLoginScreen: (context) => const LoginScreen(),
       },
