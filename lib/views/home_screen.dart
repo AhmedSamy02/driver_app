@@ -1,7 +1,9 @@
 import 'package:draggable_home/draggable_home.dart';
+import 'package:driver_app/helpers/current_user.dart';
 import 'package:driver_app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
       PagingController(firstPageKey: 0);
   @override
   void initState() {
+    CurrentUser().setUser(
+      id: '1',
+      name: 'John Doe',
+      email: 'nname18@1.com',
+      username: 'johndoe',
+      token: 'wea.0asdada3dwda.wqe.aseaasr.asdasd',
+    );
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
@@ -42,6 +51,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return DraggableHome(
+      appBarColor: Colors.blueAccent[700],
+      curvedBodyRadius: 20,
+      headerExpandedHeight: 0.3,
+      alwaysShowLeadingAndAction: true,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextButton(
+            onPressed: () {},
+            child: Text(
+              'Logout',
+              style: GoogleFonts.roboto(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+          ),
+        )
+      ],
       headerWidget: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -54,15 +82,32 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/images/driver.svg',
+              Expanded(
+                flex: 7,
+                child: SvgPicture.asset(
+                  'assets/images/driver.svg',
+                ),
               ),
-              
+              Expanded(
+                flex: 4,
+                child: Text(
+                  CurrentUser().name!,
+                  style: GoogleFonts.ptSerif(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 36,
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
-      title: const Text('Driver App'),
+      title: Text(
+        'Driver App',
+        style: GoogleFonts.roboto(
+            color: Colors.white, fontWeight: FontWeight.w500),
+      ),
       body: [
         Container(
           height: 200,
@@ -71,6 +116,18 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           height: 200,
           color: Colors.green,
+        ),
+        Container(
+          height: 200,
+          color: Colors.blue,
+        ),
+        Container(
+          height: 200,
+          color: Colors.black,
+        ),
+        Container(
+          height: 200,
+          color: Colors.purple,
         ),
 
         // PagedListView<int, User>(
