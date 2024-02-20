@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 7,
+                flex: 9,
                 child: SvgPicture.asset(
                   'assets/images/driver.svg',
                 ),
@@ -103,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      centerTitle: false,
       title: Text(
         'Driver App',
         style: GoogleFonts.roboto(
