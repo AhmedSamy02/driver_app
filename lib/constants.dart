@@ -1,6 +1,12 @@
+import 'package:flutter/material.dart';
+
 const kLoginScreen = 'login_screen';
 const kHomeScreen = 'home_screen';
 const kSplashScreen = 'splash_screen';
+const kOrderListScreen = 'order_list_screen';
+const kWorkingColor = Color(0xFFD6C423);
+const kCompletedColor = Color(0xFF12CE3B);
+const kFailedColor = Color(0xFFF00D0D);
 const baseURL = 'http://10.0.2.2:3001/';
 bool validateEmail(String text) {
   if (RegExp(
@@ -11,6 +17,7 @@ bool validateEmail(String text) {
     return false;
   }
 }
+
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";

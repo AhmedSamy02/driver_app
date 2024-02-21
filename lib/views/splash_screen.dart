@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:driver_app/constants.dart';
+import 'package:driver_app/helpers/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,10 +24,14 @@ class _SplashScreenState extends State<SplashScreen>
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (prefs.containsKey('token')) {
         nextScreen = kHomeScreen;
+        CurrentUser().id=prefs.getString('id');
+        CurrentUser().name=prefs.getString('name');
+        CurrentUser().email=prefs.getString('email');
+        CurrentUser().username=prefs.getString('username');
+        CurrentUser().token=prefs.getString('token');
       } else {
         nextScreen = kLoginScreen;
       }
-      print(nextScreen);
       Timer(
         const Duration(seconds: 3),
         () => Navigator.pushReplacementNamed(context, nextScreen!),

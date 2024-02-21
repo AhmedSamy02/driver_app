@@ -1,6 +1,7 @@
 import 'package:driver_app/constants.dart';
 import 'package:driver_app/views/home_screen.dart';
 import 'package:driver_app/views/login_screen.dart';
+import 'package:driver_app/views/order_list_screen.dart';
 import 'package:driver_app/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -37,6 +38,12 @@ class MainApp extends StatelessWidget {
                 duration: const Duration(milliseconds: 1000),
                 child: const LoginScreen(),
                 type: PageTransitionType.fade);
+          case kOrderListScreen:
+            return PageTransition(
+                duration: const Duration(milliseconds: 600),
+                child: const OrderListScreen(),
+                settings: settings,
+                type: PageTransitionType.rightToLeftWithFade);
           default:
             return null;
         }

@@ -27,14 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
       PagingController(firstPageKey: 0);
   @override
   void initState() {
-    CurrentUser().setUser(
-      id: '1',
-      name: 'John Doe',
-      email: 'nname18@1.com',
-      username: 'johndoe',
-      token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.IvNMTuvnTZJLLNf56lzhlX_rlVPh05KNEh-N0BDob9c.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-    );
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
@@ -102,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.roboto(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                      fontSize: 20),
                 ),
               ),
             )
@@ -126,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 4,
+                    flex: 5,
                     child: Text(
                       CurrentUser().name!,
                       style: GoogleFonts.ptSerif(
@@ -158,7 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 18, vertical: 12),
-                    child: HomeScreenCard(vehicle: item),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            kOrderListScreen,
+                            arguments: item.title,
+                          );
+                        },
+                        child: HomeScreenCard(vehicle: item)),
                   );
                 },
                 firstPageProgressIndicatorBuilder: (context) => Center(
