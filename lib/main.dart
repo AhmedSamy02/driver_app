@@ -1,6 +1,7 @@
 import 'package:driver_app/constants.dart';
 import 'package:driver_app/views/home_screen.dart';
 import 'package:driver_app/views/login_screen.dart';
+import 'package:driver_app/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -17,13 +18,12 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        useMaterial3: true,
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.robotoTextTheme(),
       ),
-      initialRoute: kHomeScreen,
+      initialRoute: kSplashScreen,
       routes: {
-        kLoginScreen: (context) => const LoginScreen(),
+        kSplashScreen: (context) => const SplashScreen(),
       },
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -31,6 +31,11 @@ class MainApp extends StatelessWidget {
             return PageTransition(
                 duration: const Duration(milliseconds: 600),
                 child: const HomeScreen(),
+                type: PageTransitionType.fade);
+          case kLoginScreen:
+            return PageTransition(
+                duration: const Duration(milliseconds: 1000),
+                child: const LoginScreen(),
                 type: PageTransitionType.fade);
           default:
             return null;

@@ -1,5 +1,6 @@
 import 'package:driver_app/components/login_form_field.dart';
 import 'package:driver_app/constants.dart';
+import 'package:driver_app/helpers/current_user.dart';
 import 'package:driver_app/services/user_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -155,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _passwordController.text,
                               );
                               if (response != 'success') {
-                                print(response);
+                                
                                 setState(() {
                                   _loadingFlag = false;
                                 });
@@ -165,10 +167,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Colors.blue[900]!.withOpacity(0.7),
                                     fontSize: 17);
                               } else {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString("id", CurrentUser().id!);
+                                prefs.setString("name", CurrentUser().name!);
+                                prefs.setString("token", CurrentUser().token!);
+                                prefs.setString("email", CurrentUser().email!);
+                                prefs.setString(
+                                    "username", CurrentUser().username!);
                                 setState(() {
                                   _loadingFlag = false;
                                 });
-                                Navigator.pushNamed(context, kHomeScreen);
+                                Navigator.pushReplacementNamed(context, kHomeScreen);
                               }
                             }
                           },
@@ -194,5 +204,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-

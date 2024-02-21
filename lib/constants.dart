@@ -1,5 +1,6 @@
 const kLoginScreen = 'login_screen';
 const kHomeScreen = 'home_screen';
+const kSplashScreen = 'splash_screen';
 const baseURL = 'http://10.0.2.2:3001/';
 bool validateEmail(String text) {
   if (RegExp(

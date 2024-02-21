@@ -1,5 +1,8 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:draggable_home/draggable_home.dart';
 import 'package:driver_app/components/home_card.dart';
+import 'package:driver_app/components/refresh_comp.dart';
+import 'package:driver_app/constants.dart';
 import 'package:driver_app/helpers/current_user.dart';
 import 'package:driver_app/models/vehicle.dart';
 import 'package:driver_app/services/get_vehicles.dart';
@@ -8,6 +11,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -52,126 +57,167 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  bool _loading = false;
   @override
   Widget build(BuildContext context) {
-    return DraggableHome(
-      appBarColor: Colors.blueAccent[700],
-      curvedBodyRadius: 25,
-      headerExpandedHeight: 0.3,
-      alwaysShowLeadingAndAction: true,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              'Logout',
-              style: GoogleFonts.roboto(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
-            ),
-          ),
-        )
-      ],
-      headerWidget: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF01B1ED), Color(0xFF014AFF)],
-          ),
+    return CustomRefreshIndicator(
+      onRefresh: () async {
+        _pagingController.refresh();
+      },
+      builder: (context, child, controller) {
+        return CheckMarkIndicator(
+          controller: _pagingController,
+          child: child,
+        );
+      },
+      child: ModalProgressHUD(
+        inAsyncCall: _loading,
+        blur: 2,
+        progressIndicator: const SpinKitSpinningLines(
+          color: Colors.black,
+          size: 90.0,
         ),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 9,
-                child: SvgPicture.asset(
-                  'assets/images/driver.svg',
-                ),
-              ),
-              Expanded(
-                flex: 4,
+        color: Colors.black12,
+        child: DraggableHome(
+          appBarColor: Colors.blueAccent[700],
+          curvedBodyRadius: 25,
+          headerExpandedHeight: 0.3,
+          alwaysShowLeadingAndAction: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                onPressed: () async {
+                  setState(() {
+                    _loading = true;
+                  });
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.clear();
+                  CurrentUser().token = null;
+                  Navigator.pushReplacementNamed(context, kLoginScreen);
+                },
                 child: Text(
-                  CurrentUser().name!,
-                  style: GoogleFonts.ptSerif(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 36,
-                  ),
+                  'Logout',
+                  style: GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-      centerTitle: false,
-      title: Text(
-        'Driver App',
-        style: GoogleFonts.roboto(
-            color: Colors.white, fontWeight: FontWeight.w500),
-      ),
-      body: [
-        PagedListView<int, Vehicle>(
-          padding:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.045),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          pagingController: _pagingController,
-          builderDelegate: PagedChildBuilderDelegate<Vehicle>(
-            itemBuilder: (context, item, index) {
-              return Padding(
-                padding:const  EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                child: HomeScreenCard(vehicle: item),
-              );
-            },
-            firstPageProgressIndicatorBuilder: (context) => Center(
-              child: SpinKitSpinningLines(
-                color: Colors.blueAccent[700]!,
+              ),
+            )
+          ],
+          headerWidget: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF01B1ED), Color(0xFF014AFF)],
               ),
             ),
-            newPageProgressIndicatorBuilder: (context) => Center(
-              child: SpinKitSpinningLines(
-                color: Colors.blueAccent[700]!,
-              ),
-            ),
-            noItemsFoundIndicatorBuilder: (context) => SizedBox(
+            child: SafeArea(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0),
+                  Expanded(
+                    flex: 9,
+                    child: SvgPicture.asset(
+                      'assets/images/driver.svg',
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
                     child: Text(
-                      'Waiting',
-                      style: GoogleFonts.roboto(
+                      CurrentUser().name!,
+                      style: GoogleFonts.ptSerif(
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 34,
+                        fontSize: 36,
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 4 / 5,
-                      child: Text(
-                        'Waiting to be assigned a vehicle. Please check back later.',
-                        style: GoogleFonts.roboto(
-                          color: Colors.grey,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),
           ),
+          centerTitle: false,
+          title: Text(
+            'Driver App',
+            style: GoogleFonts.roboto(
+                color: Colors.white, fontWeight: FontWeight.w500),
+          ),
+          body: [
+            PagedListView<int, Vehicle>(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.045),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<Vehicle>(
+                itemBuilder: (context, item, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 12),
+                    child: HomeScreenCard(vehicle: item),
+                  );
+                },
+                firstPageProgressIndicatorBuilder: (context) => Center(
+                  child: SpinKitSpinningLines(
+                    color: Colors.blueAccent[700]!,
+                  ),
+                ),
+                newPageProgressIndicatorBuilder: (context) => Center(
+                  child: SpinKitSpinningLines(
+                    color: Colors.blueAccent[700]!,
+                  ),
+                ),
+                firstPageErrorIndicatorBuilder: (context) {
+                  return Center(
+                    child: Text(
+                      'Error fetching vehicles',
+                      style: GoogleFonts.roboto(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 26,
+                      ),
+                    ),
+                  );
+                },
+                noItemsFoundIndicatorBuilder: (context) => SizedBox(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Text(
+                          'Waiting',
+                          style: GoogleFonts.roboto(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 34,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 4 / 5,
+                          child: Text(
+                            'Waiting to be assigned a vehicle. Please check back later.',
+                            style: GoogleFonts.roboto(
+                              color: Colors.grey,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
-
-
