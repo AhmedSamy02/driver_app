@@ -1,13 +1,13 @@
-class vehicle {
+class Vehicle {
   String? id;
   String? title;
   String? address;
   int? fuelLevel;
 
-  vehicle({this.id, this.title, this.address, this.fuelLevel});
+  Vehicle({this.id, this.title, this.address, this.fuelLevel});
 
-  factory vehicle.fromJson(Map<String, dynamic> json) {
-    return vehicle(
+  factory Vehicle.fromJson(Map<String, dynamic> json) {
+    return Vehicle(
       id: json['id'],
       title: json['title'],
       address: json['address'],

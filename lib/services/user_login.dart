@@ -7,8 +7,8 @@ import '../constants.dart';
 class UserLogin {
   UserLogin._();
   static final instance = UserLogin._();
-  static const String _endpoint = 'login';
-  static final Dio _dio = Dio();
+  static const _endpoint = 'login';
+  static final _dio = Dio();
   static Future<dynamic> login(String email, String password) async {
     try {
       final response = await _dio.post(baseURL + _endpoint, data: {
