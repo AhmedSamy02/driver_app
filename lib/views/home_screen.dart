@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.pushNamed(
                             context,
                             kOrderListScreen,
-                            arguments: item.title,
+                            arguments: item.id,
                           );
                         },
                         child: HomeScreenCard(vehicle: item)),

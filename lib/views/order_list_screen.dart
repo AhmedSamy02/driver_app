@@ -1,12 +1,12 @@
 import 'package:driver_app/components/back_button_with_text.dart';
-import 'package:driver_app/components/category_divider.dart';
-import 'package:driver_app/constants.dart';
+import 'package:driver_app/components/categories_row.dart';
 import 'package:driver_app/helpers/current_user.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:driver_app/models/order.dart';
+import 'package:driver_app/services/get_orders_by_vehicle_id.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -17,9 +17,39 @@ class OrderListScreen extends StatefulWidget {
 
 class _OrderListScreenState extends State<OrderListScreen> {
   String _vehicleTitle = '';
+  static const _pageSize = 5;
+  bool _initial = true;
+  final PagingController<int, Order> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final List<Order> newItems = await GetOrdersByVehicleId.getOrders(
+        _pageSize,
+        pageKey,
+        _vehicleTitle,
+      );
+      final isLastPage = newItems.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    _vehicleTitle = ModalRoute.of(context)!.settings.arguments as String;
+    if (_initial) {
+      _initial = false;
+      _vehicleTitle = ModalRoute.of(context)!.settings.arguments as String;
+      _pagingController.addPageRequestListener((pageKey) {
+        _fetchPage(pageKey);
+      });
+    }
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
@@ -98,57 +128,32 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'P - Pending',
-                      style: GoogleFonts.roboto(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const CategoryDivider(),
-                    Text(
-                      'W - Work in Progress',
-                      style: GoogleFonts.roboto(
-                        color: kWorkingColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const CategoryDivider(),
-                    Text(
-                      'C - Completed',
-                      style: GoogleFonts.roboto(
-                        color: kCompletedColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const CategoryDivider(),
-                    Text(
-                      'F - Failed',
-                      style: GoogleFonts.roboto(
-                        color: kFailedColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            const Padding(
+              padding: EdgeInsets.all(6.0),
+              child: CategoriesRow(),
             ),
-            
+            SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.75,
+              child: PagedListView(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate(
+                    itemBuilder: (context, item, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 5,
+                          child: Container(
+                            color: Colors.grey[100],
+                          )
+                        ),
+                      );
+                    },
+                  )),
+            )
           ],
         ),
       ),
     );
   }
 }
-
-
