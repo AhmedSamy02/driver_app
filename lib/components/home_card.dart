@@ -84,8 +84,9 @@ class HomeScreenCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Expanded(
-                      child: HomeScreenButton(),
+                    Expanded(
+                      child: HomeScreenButton(
+                          title: 'View', color: Colors.blueAccent[700]!),
                     ),
                   ],
                 ),

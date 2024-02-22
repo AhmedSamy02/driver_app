@@ -4,21 +4,24 @@ import 'package:google_fonts/google_fonts.dart';
 class HomeScreenButton extends StatelessWidget {
   const HomeScreenButton({
     super.key,
+    required this.title,
+    required this.color
   });
-
+  final String title;
+  final Color color;
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.blueAccent[700],
+        color: color,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Stack(
         children: [
           Center(
             child: Text(
-              'View',
+              title,
               style: GoogleFonts.roboto(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -37,7 +40,7 @@ class HomeScreenButton extends StatelessWidget {
               ),
               child: Icon(
                 Icons.arrow_forward,
-                color: Colors.blueAccent[700],
+                color: color,
                 size: 17,
               ),
             ),
