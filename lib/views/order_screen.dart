@@ -9,10 +9,13 @@ import 'package:driver_app/components/pending_completed_richtext.dart';
 import 'package:driver_app/components/status_and_distance_row.dart';
 import 'package:driver_app/components/working_richtext.dart';
 import 'package:driver_app/constants.dart';
+import 'package:driver_app/cubits/finish_order_cubit/finish_order_cubit.dart';
+import 'package:driver_app/cubits/finish_order_cubit/finish_order_state.dart';
 import 'package:driver_app/models/detail.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:driver_app/services/get_order_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,7 +34,7 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   double _minHeight = 0.0;
   double _maxHeight = 0.0;
-  late Order _order ;
+  late Order _order;
   String? _char;
   Color? _charColor;
   @override
@@ -77,109 +80,128 @@ class _OrderScreenState extends State<OrderScreen> {
             topRight: Radius.circular(40),
           ),
           panelBuilder: () {
-            return Column(
-              children: [
-                SizedBox(
-                  height: _minHeight,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 18),
-                        child: OrderIdRow(orderId: _order.orderId!),
-                      ),
-                      Row(
+            return BlocBuilder<FinishOrderCubit, FinishOrderState>(
+              builder: (context, state) {
+                logger.i('message: ${state}');
+            
+                if (state is FinishOrderLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is FinishOrderSuccessState) {
+                  _order.status = state.status;
+                  Map<String, Color> stat = orderStatus(_order.status!);
+                  _charColor = stat.values.first;
+                  _char = stat.keys.first[0];
+                }
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: _minHeight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 24.0),
-                              child: StatusAndDistanceRow(
-                                  char: _char!,
-                                  charColor: _charColor!,
-                                  distance: _order.distance!.toString()),
-                            ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18),
+                            child: OrderIdRow(orderId: _order.orderId!),
                           ),
-                          Expanded(
-                              child: Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: _whichButton(_order.status!),
-                          ))
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 24.0),
+                                  child: StatusAndDistanceRow(
+                                      char: _char!,
+                                      charColor: _charColor!,
+                                      distance: _order.distance!.toString()),
+                                ),
+                              ),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(right: 20.0),
+                                child: _whichButton(_order.status!),
+                              ))
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: _maxHeight - _minHeight,
-                  child: FutureBuilder<List<Detail>>(
-                    future: _future,
-                    initialData: [
-                      _dummy,
-                      _dummy,
-                    ],
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError &&
-                          snapshot.error is TimeoutException) {
-                        return Center(
-                          child: Text(
-                            'Connection Timeout',
-                            style: GoogleFonts.roboto(
-                              fontSize: 20,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Skeletonizer(
-                          enabled: snapshot.data![0].estimatedA ==
-                              '1990-01-01 00:00:00.000000',
-                          effect: ShimmerEffect(baseColor: Colors.grey[300]!),
-                          child: ListView.separated(
-                            padding: const EdgeInsets.only(top: 30),
-                            itemBuilder: (context, index) {
-                              var item = snapshot.data![index];
-                              Map<String, Color> stat =
-                                  orderStatus(item.status!);
-                              var charColor = stat.values.first;
-                              var char = stat.keys.first[0];
-                              return ListTile(
-                                title: Text(
-                                  _order.to!,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 17,
-                                    color: Colors.black54,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: _maxHeight - _minHeight,
+                      child: FutureBuilder<List<Detail>>(
+                        future: _future,
+                        initialData: [
+                          _dummy,
+                          _dummy,
+                        ],
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError &&
+                              snapshot.error is TimeoutException) {
+                            return Center(
+                              child: Text(
+                                'Connection Timeout',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 20,
+                                  color: Colors.black54,
                                 ),
-                                subtitle: _whichRichText(char, item),
-                                leading: SizedBox(
-                                  width: 60,
-                                  child: Text(
-                                    char,
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.beVietnamPro(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 45,
-                                      color: charColor,
+                              ),
+                            );
+                          } else {
+                            return Skeletonizer(
+                              enabled: snapshot.data![0].estimatedA ==
+                                  '1990-01-01 00:00:00.000000',
+                              effect:
+                                  ShimmerEffect(baseColor: Colors.grey[300]!),
+                              child: ListView.separated(
+                                padding: const EdgeInsets.only(top: 30),
+                                itemBuilder: (context, index) {
+                                  var item = snapshot.data![index];
+                                  Map<String, Color> stat =
+                                      orderStatus(item.status!);
+                                  var charColor = stat.values.first;
+                                  var char = stat.keys.first[0];
+                                  return ListTile(
+                                    title: Text(
+                                      _order.to!,
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 17,
+                                        color: Colors.black54,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
+                                    subtitle: _whichRichText(char, item),
+                                    leading: SizedBox(
+                                      width: 60,
+                                      child: Text(
+                                        char,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 45,
+                                          color: charColor,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                  thickness: 1.5,
+                                  indent: 20,
+                                  endIndent: 20,
                                 ),
-                              );
-                            },
-                            separatorBuilder: (context, index) => const Divider(
-                              thickness: 1.5,
-                              indent: 20,
-                              endIndent: 20,
-                            ),
-                            itemCount: snapshot.data!.length,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
+                                itemCount: snapshot.data!.length,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
           maxHeight: _maxHeight,
@@ -252,7 +274,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   title: 'Finish',
                   color: kCompletedColor,
                   onPressed: () {
-                    Navigator.pushNamed(context, kQrScreen,arguments: _order);
+                    Navigator.pushNamed(context, kQrScreen, arguments: _order);
                   },
                   icon: FontAwesomeIcons.check,
                 ),
@@ -270,5 +292,3 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 }
-
-

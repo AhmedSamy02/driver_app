@@ -1,9 +1,11 @@
 import 'package:driver_app/components/application_small_appbar.dart';
+import 'package:driver_app/cubits/finish_order_cubit/finish_order_cubit.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:driver_app/services/send_qr_code.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -46,6 +48,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                     qrCode: barcode.rawValue!,
                     vehicleId: _order.vehicleId!,
                     orderId: _order.orderId!);
+                Navigator.pop(context);
                 if (response == 'Success') {
                   QuickAlert.show(
                     context: context,
@@ -55,8 +58,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
                     confirmBtnText: 'Okay',
                     showConfirmBtn: true,
                     onConfirmBtnTap: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      BlocProvider.of<FinishOrderCubit>(context)
+                          .orderSuccess('Completed');
                       Navigator.pop(context);
                     },
                   );
@@ -68,11 +71,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                     text: response,
                     confirmBtnText: 'Okay',
                     showConfirmBtn: true,
-                    onConfirmBtnTap: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
+                    onConfirmBtnTap: () {},
                   );
                 }
               },
