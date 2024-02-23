@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 const kLoginScreen = 'login_screen';
 const kHomeScreen = 'home_screen';
@@ -18,6 +19,7 @@ bool validateEmail(String text) {
     return false;
   }
 }
+
 Map<String, Color> orderStatus(String status) {
   //? Charachter and its color - String and button color
   switch (status) {
@@ -31,8 +33,15 @@ Map<String, Color> orderStatus(String status) {
       return {'W': kWorkingColor, 'Details': Colors.yellow[800]!};
   }
 }
+
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
+
+var logger = Logger(
+  printer: PrettyPrinter(
+      methodCount: 0, 
+      ),
+);

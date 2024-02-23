@@ -1,3 +1,4 @@
+import 'package:driver_app/models/detail.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,11 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 class CompletedPendingRichText extends StatelessWidget {
   const CompletedPendingRichText({
     super.key,
-    required this.order,
+    required this.detail,
     required this.completed,
   });
 
-  final Order order;
+  final Detail detail;
   final bool completed;
 
   @override
@@ -28,7 +29,7 @@ class CompletedPendingRichText extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '12:00 PM',
+                  text: completed ? detail.estimatedD : detail.estimatedA,
                   style: GoogleFonts.roboto(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w600,
@@ -47,7 +48,7 @@ class CompletedPendingRichText extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: completed ? '12:00 PM' : '-',
+                  text: completed ? detail.actualD : '-',
                   style: GoogleFonts.roboto(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w600,

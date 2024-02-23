@@ -1,14 +1,14 @@
-import 'package:driver_app/models/order.dart';
+import 'package:driver_app/models/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WorkingRichText extends StatelessWidget {
   const WorkingRichText({
     super.key,
-    required Order order,
-  }) : _order = order;
+    required this.detail,
+  });
 
-  final Order _order;
+  final Detail detail;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class WorkingRichText extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '50 minutes',
+                  text: detail.duration,
                   style: GoogleFonts.roboto(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w600,
@@ -41,7 +41,7 @@ class WorkingRichText extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '12:00 PM',
+                  text: detail.estimatedD,
                   style: GoogleFonts.roboto(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w600,
@@ -75,7 +75,7 @@ class WorkingRichText extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '12:00 PM',
+                  text: detail.estimatedA,
                   style: GoogleFonts.roboto(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w600,
@@ -92,7 +92,7 @@ class WorkingRichText extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '12:12 PM',
+                  text: detail.actualA,
                   style: GoogleFonts.roboto(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w600,

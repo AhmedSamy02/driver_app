@@ -1,9 +1,14 @@
 import 'package:driver_app/components/back_button_with_text.dart';
 import 'package:driver_app/components/failed_richtext.dart';
+import 'package:driver_app/components/pending_completed_richtext.dart';
+import 'package:driver_app/components/working_richtext.dart';
 import 'package:driver_app/constants.dart';
+import 'package:driver_app/models/detail.dart';
 import 'package:driver_app/models/order.dart';
+import 'package:driver_app/services/get_order_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
@@ -49,36 +54,58 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
               SizedBox(
                 height: _maxHeight - _minHeight,
-                child: ListView.separated(
-                  padding: const EdgeInsets.only(top: 30),
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                        _order.to!,
-                        style: GoogleFonts.roboto(
-                          fontSize: 17,
-                          color: Colors.black54,
+                child: FutureBuilder<List<Detail>>(
+                  future: GetOrderDetails.getOrderDetails(
+                      _order.orderId!, _order.vehicleId!),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: SpinKitSpinningLines(
+                            color: Colors.blueAccent[700]!),
+                      );
+                    } else if (snapshot.hasData) {
+                      return ListView.separated(
+                        padding: const EdgeInsets.only(top: 30),
+                        itemBuilder: (context, index) {
+                          var item = snapshot.data![index];
+                          Map<String, Color> stat = orderStatus(item.status!);
+                          var charColor = stat.values.first;
+                          var btnColor = stat.values.last;
+                          var char = stat.keys.first[0];
+                          return ListTile(
+                            title: Text(
+                              _order.to!,
+                              style: GoogleFonts.roboto(
+                                fontSize: 17,
+                                color: Colors.black54,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: _whichRichText(char, item),
+                            leading: Text(
+                              char,
+                              style: GoogleFonts.beVietnamPro(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 48,
+                                color: charColor,
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => const Divider(
+                          thickness: 1.5,
+                          indent: 20,
+                          endIndent: 20,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: const FailedRichText(message: 'Failed to deliver'),
-                      leading: Text(
-                        'F',
-                        style: GoogleFonts.beVietnamPro(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 48,
-                          color: kFailedColor,
-                        ),
-                      ),
-                    );
+                        itemCount: snapshot.data!.length,
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('No Data'),
+                      );
+                    }
                   },
-                  separatorBuilder: (context, index) => const Divider(
-                    thickness: 1.5,
-                    indent: 20,
-                    endIndent: 20,
-                  ),
-                  itemCount: 5,
                 ),
               ),
             ],
@@ -131,7 +158,17 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
     );
   }
+
+  Widget _whichRichText(String status, Detail detail) {
+    switch (status) {
+      case 'C':
+        return CompletedPendingRichText(detail: detail, completed: true);
+      case 'P':
+        return CompletedPendingRichText(detail: detail, completed: false);
+      case 'W':
+        return WorkingRichText(detail: detail);
+      default:
+        return FailedRichText(message: detail.message!);
+    }
+  }
 }
-
-
-
