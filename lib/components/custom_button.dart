@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomButton extends StatelessWidget {
@@ -7,10 +8,12 @@ class CustomButton extends StatelessWidget {
     required this.title,
     required this.color,
     required this.onPressed,
+    required this.icon,
   });
   final String title;
   final Color color;
-  final void Function() onPressed;
+  final void Function()? onPressed;
+  final IconData? icon;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -20,6 +23,7 @@ class CustomButton extends StatelessWidget {
           shadowColor: Colors.transparent,
           backgroundColor: color,
           fixedSize: const Size.fromHeight(20),
+          disabledBackgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
           ),
@@ -37,17 +41,20 @@ class CustomButton extends StatelessWidget {
               ),
             ),
           ),
-          Align(
+          icon == null
+              ? const SizedBox()
+              : Align(
             alignment: Alignment.centerRight,
             child: Container(
-              height: 20,
-              width: 20,
+              height: 25,
+              width: 25,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(
-                Icons.arrow_forward,
+              alignment: Alignment.center,
+              child: FaIcon(
+                icon,
                 color: color,
                 size: 17,
               ),

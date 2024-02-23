@@ -2,6 +2,7 @@ import 'package:driver_app/components/custom_button.dart';
 import 'package:driver_app/models/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreenCard extends StatelessWidget {
@@ -91,6 +92,8 @@ class HomeScreenCard extends StatelessWidget {
                         title: 'View',
                         color: Colors.blueAccent[700]!,
                         onPressed: onPressed,
+
+                        icon: FontAwesomeIcons.arrowRight,
                       ),
                     ),
                   ],

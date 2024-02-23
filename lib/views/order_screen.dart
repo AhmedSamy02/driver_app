@@ -1,16 +1,23 @@
 import 'dart:async';
 
 import 'package:driver_app/components/back_button_with_text.dart';
+import 'package:driver_app/components/custom_button.dart';
+import 'package:driver_app/components/custom_icon_button.dart';
 import 'package:driver_app/components/failed_richtext.dart';
+import 'package:driver_app/components/order_id_row.dart';
 import 'package:driver_app/components/pending_completed_richtext.dart';
+import 'package:driver_app/components/status_and_distance_row.dart';
 import 'package:driver_app/components/working_richtext.dart';
 import 'package:driver_app/constants.dart';
 import 'package:driver_app/models/detail.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:driver_app/services/get_order_details.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -27,6 +34,8 @@ class _OrderScreenState extends State<OrderScreen> {
   double _minHeight = 0.0;
   double _maxHeight = 0.0;
   Order _order = Order();
+  String? _char;
+  Color? _charColor;
   @override
   void didChangeDependencies() {
     _minHeight = MediaQuery.of(context).size.height * 3 / 16;
@@ -34,11 +43,14 @@ class _OrderScreenState extends State<OrderScreen> {
     _order = ModalRoute.of(context)!.settings.arguments as Order;
     _future =
         GetOrderDetails.getOrderDetails(_order.orderId!, _order.vehicleId!);
+    Map<String, Color> stat = orderStatus(_order.status!);
+    _charColor = stat.values.first;
+    _char = stat.keys.first[0];
     super.didChangeDependencies();
   }
 
   Future<List<Detail>>? _future;
-  Detail dummy = Detail(
+  final Detail _dummy = Detail(
     status: 'Working',
     estimatedA: '1990-01-01 00:00:00.000000',
     duration: '0 hours',
@@ -63,29 +75,49 @@ class _OrderScreenState extends State<OrderScreen> {
             });
           },
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+            topLeft: Radius.circular(40),
+            topRight: Radius.circular(40),
           ),
           panelBuilder: () {
             return Column(
               children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.cyan,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
+                SizedBox(
                   height: _minHeight,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18),
+                        child: OrderIdRow(orderId: _order.orderId!),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 24.0),
+                              child: StatusAndDistanceRow(
+                                  char: _char!,
+                                  charColor: _charColor!,
+                                  distance: _order.distance!.toString()),
+                            ),
+                          ),
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: _whichButton(_order.status!),
+                          ))
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: _maxHeight - _minHeight,
                   child: FutureBuilder<List<Detail>>(
                     future: _future,
                     initialData: [
-                      dummy,
-                      dummy,
+                      _dummy,
+                      _dummy,
                     ],
                     builder: (context, snapshot) {
                       if (snapshot.hasError &&
@@ -111,7 +143,6 @@ class _OrderScreenState extends State<OrderScreen> {
                               Map<String, Color> stat =
                                   orderStatus(item.status!);
                               var charColor = stat.values.first;
-                              var btnColor = stat.values.last;
                               var char = stat.keys.first[0];
                               return ListTile(
                                 title: Text(
@@ -212,6 +243,60 @@ class _OrderScreenState extends State<OrderScreen> {
         return WorkingRichText(detail: detail);
       default:
         return FailedRichText(message: detail.message!);
+    }
+  }
+
+  Widget _whichButton(String status) {
+    switch (status) {
+      case 'Completed':
+        return CustomButton(
+          title: 'Completed',
+          color: Colors.greenAccent[700]!,
+          onPressed: null,
+          icon: null,
+        );
+      case 'Pending':
+        return CustomButton(
+          title: 'Start Order',
+          color: kWorkingColor,
+          onPressed: () {
+            //TODO: Implement Start Order
+          },
+          icon: FontAwesomeIcons.car,
+        );
+      case 'Working':
+        return Row(
+          children: [
+            const Expanded(
+              flex: 1,
+              child: CustomIconButton(
+                color: kWorkingColor,
+                icon: Icons.navigation_outlined,
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: CustomButton(
+                  title: 'Finish',
+                  color: kCompletedColor,
+                  onPressed: () {
+                    //TODO: Implement Finish Order
+                  },
+                  icon: FontAwesomeIcons.check,
+                ),
+              ),
+            ),
+          ],
+        );
+      default:
+        return const CustomButton(
+          title: 'Failed',
+          color: kFailedColor,
+          onPressed: null,
+          icon: null,
+        );
     }
   }
 }

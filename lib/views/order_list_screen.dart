@@ -2,6 +2,8 @@ import 'package:driver_app/components/back_button_with_text.dart';
 import 'package:driver_app/components/categories_row.dart';
 import 'package:driver_app/components/from_to_row.dart';
 import 'package:driver_app/components/custom_button.dart';
+import 'package:driver_app/components/order_id_row.dart';
+import 'package:driver_app/components/status_and_distance_row.dart';
 import 'package:driver_app/constants.dart';
 import 'package:driver_app/helpers/current_user.dart';
 import 'package:driver_app/models/order.dart';
@@ -9,6 +11,7 @@ import 'package:driver_app/services/get_orders_by_vehicle_id.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -177,32 +180,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(22.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: SvgPicture.asset(
-                                            'assets/images/briefcase.svg'),
-                                      ),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 12.0),
-                                          child: Text(
-                                            '#${item.orderId!}',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.roboto(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 24,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  child: OrderIdRow(orderId: item.orderId!),
                                 ),
                                 FromToRow(
                                   from: item.from!,
@@ -223,27 +201,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      Text(char,
-                                          style: GoogleFonts.roboto(
-                                            color: charColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          )),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 12, right: 6),
-                                        child: SvgPicture.asset(
-                                            'assets/images/distance.svg'),
-                                      ),
-                                      SizedBox(
-                                        width: 75,
-                                        child: Text('${item.distance} km',
-                                            style: GoogleFonts.ptSerif(
-                                              color: Colors.grey[600],
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 17,
-                                            )),
-                                      ),
+                                      StatusAndDistanceRow(
+                                          char: char,
+                                          charColor: charColor,
+                                          distance: item.distance!.toString()),
                                       const Spacer(),
                                       Padding(
                                         padding:
@@ -254,6 +215,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                     .width *
                                                 0.35,
                                             child: CustomButton(
+                                              icon: FontAwesomeIcons.arrowRight,
                                               title: text,
                                               color: btnColor,
                                               onPressed: () {
@@ -305,6 +267,4 @@ class _OrderListScreenState extends State<OrderListScreen> {
       ),
     );
   }
-
-  
 }

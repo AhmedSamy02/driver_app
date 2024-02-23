@@ -1,5 +1,4 @@
 import 'package:driver_app/models/detail.dart';
-import 'package:driver_app/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
