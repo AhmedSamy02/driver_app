@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreenButton extends StatelessWidget {
-  const HomeScreenButton({
+class CustomButton extends StatelessWidget {
+  const CustomButton({
     super.key,
     required this.title,
-    required this.color
+    required this.color,
+    required this.onPressed,
   });
   final String title;
   final Color color;
+  final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: color,
+          padding: const EdgeInsets.all(5)),
       child: Stack(
+        alignment: Alignment.center,
         children: [
           Center(
             child: Text(

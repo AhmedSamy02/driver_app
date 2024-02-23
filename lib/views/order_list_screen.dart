@@ -1,7 +1,7 @@
 import 'package:driver_app/components/back_button_with_text.dart';
 import 'package:driver_app/components/categories_row.dart';
 import 'package:driver_app/components/from_to_row.dart';
-import 'package:driver_app/components/home_button.dart';
+import 'package:driver_app/components/custom_button.dart';
 import 'package:driver_app/constants.dart';
 import 'package:driver_app/helpers/current_user.dart';
 import 'package:driver_app/models/order.dart';
@@ -156,101 +156,118 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       var btnColor = stat.values.last;
                       var char = stat.keys.first[0];
                       var text = stat.keys.last;
-                      return Card(
-                        elevation: 6,
-                        child: Container(
-                          color: Colors.grey[100],
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.275,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(22.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: SvgPicture.asset(
-                                          'assets/images/briefcase.svg'),
-                                    ),
-                                    Expanded(
-                                      flex: 6,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 12.0),
-                                        child: Text(
-                                          '#${item.orderId!}',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.roboto(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 24,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            kOrderScreen,
+                            arguments: item,
+                          );
+                        },
+                        child: Card(
+                          elevation: 6,
+                          child: Container(
+                            color: Colors.grey[100],
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.275,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(22.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: SvgPicture.asset(
+                                            'assets/images/briefcase.svg'),
+                                      ),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 12.0),
+                                          child: Text(
+                                            '#${item.orderId!}',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.roboto(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 24,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              FromToRow(
-                                from: item.from!,
-                                svg: 'from',
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 14),
-                                child: FromToRow(
-                                  from: item.to!,
-                                  svg: 'to',
+                                FromToRow(
+                                  from: item.from!,
+                                  svg: 'from',
                                 ),
-                              ),
-                              const Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 22.0,
-                                  bottom: 12,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 14),
+                                  child: FromToRow(
+                                    from: item.to!,
+                                    svg: 'to',
+                                  ),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Text(char,
-                                        style: GoogleFonts.roboto(
-                                          color: charColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        )),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 12, right: 6),
-                                      child: SvgPicture.asset(
-                                          'assets/images/distance.svg'),
-                                    ),
-                                    SizedBox(
-                                      width: 75,
-                                      child: Text('${item.distance} km',
-                                          style: GoogleFonts.ptSerif(
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
+                                const Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 22.0,
+                                    bottom: 12,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(char,
+                                          style: GoogleFonts.roboto(
+                                            color: charColor,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
                                           )),
-                                    ),
-                                    const Spacer(),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 12.0),
-                                      child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.35,
-                                          child: HomeScreenButton(
-                                            title: text,
-                                            color: btnColor,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 12, right: 6),
+                                        child: SvgPicture.asset(
+                                            'assets/images/distance.svg'),
+                                      ),
+                                      SizedBox(
+                                        width: 75,
+                                        child: Text('${item.distance} km',
+                                            style: GoogleFonts.ptSerif(
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 17,
+                                            )),
+                                      ),
+                                      const Spacer(),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 12.0),
+                                        child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.35,
+                                            child: CustomButton(
+                                              title: text,
+                                              color: btnColor,
+                                              onPressed: (){
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  kOrderScreen,
+                                                  arguments: item,
+                                                );
+                                              
+                                              },
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -268,7 +285,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     firstPageErrorIndicatorBuilder: (context) {
                       return Center(
                         child: Text(
-                          'Error fetching vehicles',
+                          'Error fetching orders',
                           style: GoogleFonts.roboto(
                             color: Colors.black,
                             fontWeight: FontWeight.w700,
@@ -286,7 +303,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
       ),
     );
   }
-
   Map<String, Color> _orderStatus(String status) {
     //? Charachter and its color - String and button color
     switch (status) {
@@ -301,4 +317,3 @@ class _OrderListScreenState extends State<OrderListScreen> {
     }
   }
 }
-

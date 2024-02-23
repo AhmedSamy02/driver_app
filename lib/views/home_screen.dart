@@ -161,7 +161,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           );
                         },
-                        child: HomeScreenCard(vehicle: item)),
+                        child: HomeScreenCard(
+                          vehicle: item,
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              kOrderListScreen,
+                              arguments: [
+                                item.id,
+                                item.title,
+                              ],
+                            );
+                          },
+                        )),
                   );
                 },
                 firstPageProgressIndicatorBuilder: (context) => Center(
@@ -222,5 +234,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _pagingController.dispose();
+    super.dispose();
   }
 }

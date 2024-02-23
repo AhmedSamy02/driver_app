@@ -1,4 +1,4 @@
-import 'package:driver_app/components/home_button.dart';
+import 'package:driver_app/components/custom_button.dart';
 import 'package:driver_app/models/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,8 +8,10 @@ class HomeScreenCard extends StatelessWidget {
   const HomeScreenCard({
     super.key,
     required this.vehicle,
+    required this.onPressed,
   });
   final Vehicle vehicle;
+  final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -85,8 +87,11 @@ class HomeScreenCard extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: HomeScreenButton(
-                          title: 'View', color: Colors.blueAccent[700]!),
+                      child: CustomButton(
+                        title: 'View',
+                        color: Colors.blueAccent[700]!,
+                        onPressed: onPressed,
+                      ),
                     ),
                   ],
                 ),

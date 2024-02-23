@@ -27,7 +27,7 @@ class FromToRow extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12.0),
             child: Text(
               from,
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.roboto(
                 color: Colors.grey[600],
