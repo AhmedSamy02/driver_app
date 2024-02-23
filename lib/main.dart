@@ -3,6 +3,7 @@ import 'package:driver_app/views/home_screen.dart';
 import 'package:driver_app/views/login_screen.dart';
 import 'package:driver_app/views/order_list_screen.dart';
 import 'package:driver_app/views/order_screen.dart';
+import 'package:driver_app/views/qr_scan_screen.dart';
 import 'package:driver_app/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,6 +50,13 @@ class MainApp extends StatelessWidget {
             return PageTransition(
                 duration: const Duration(milliseconds: 600),
                 child: const OrderScreen(),
+                settings: settings,
+                type: PageTransitionType.fade);
+          
+          case kQrScreen:
+            return PageTransition(
+                duration: const Duration(milliseconds: 600),
+                child: const QrScanScreen(),
                 settings: settings,
                 type: PageTransitionType.fade);
           default:

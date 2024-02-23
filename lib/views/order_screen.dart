@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:driver_app/components/back_button_with_text.dart';
+import 'package:driver_app/components/application_small_appbar.dart';
 import 'package:driver_app/components/custom_button.dart';
 import 'package:driver_app/components/custom_icon_button.dart';
 import 'package:driver_app/components/failed_richtext.dart';
@@ -12,9 +12,7 @@ import 'package:driver_app/constants.dart';
 import 'package:driver_app/models/detail.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:driver_app/services/get_order_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,7 +31,7 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   double _minHeight = 0.0;
   double _maxHeight = 0.0;
-  Order _order = Order();
+  late Order _order ;
   String? _char;
   Color? _charColor;
   @override
@@ -186,40 +184,12 @@ class _OrderScreenState extends State<OrderScreen> {
           },
           maxHeight: _maxHeight,
           minHeight: _minHeight,
-          body: Column(
+          body: const Column(
             children: [
               Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Color(0xFF0047FF), Color(0xFF00B3EC)],
-                    ),
-                  ),
-                  child: SafeArea(
-                    child: Stack(
-                      children: [
-                        const BackButtonWithText(),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Order Details',
-                              style: GoogleFonts.roboto(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                child: ApplicationSmallAppbar(),
               ),
-              const Expanded(
+              Expanded(
                 flex: 7,
                 child: BlurHash(
                   hash:
@@ -282,7 +252,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   title: 'Finish',
                   color: kCompletedColor,
                   onPressed: () {
-                    //TODO: Implement Finish Order
+                    Navigator.pushNamed(context, kQrScreen,arguments: _order);
                   },
                   icon: FontAwesomeIcons.check,
                 ),
@@ -300,3 +270,5 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 }
+
+
