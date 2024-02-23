@@ -1,6 +1,7 @@
 class Order {
   String? id;
   String? orderId;
+  String? vehicleId;
   String? from;
   String? to;
   String? status;

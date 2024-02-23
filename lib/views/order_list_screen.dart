@@ -23,7 +23,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
   String _vehicleTitle = '';
   String _vehicleId = '';
   static const _pageSize = 5;
-  bool _initial = true;
   final PagingController<int, Order> _pagingController =
       PagingController(firstPageKey: 0);
 
@@ -47,16 +46,18 @@ class _OrderListScreenState extends State<OrderListScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    var list = ModalRoute.of(context)!.settings.arguments as List<String?>;
+    _vehicleTitle = list[1]!;
+    _vehicleId = list[0]!;
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (_initial) {
-      _initial = false;
-      var list = ModalRoute.of(context)!.settings.arguments as List<String?>;
-      _vehicleTitle = list[1]!;
-      _vehicleId = list[0]!;
-      _pagingController.addPageRequestListener((pageKey) {
-        _fetchPage(pageKey);
-      });
-    }
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
@@ -253,13 +254,12 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                             child: CustomButton(
                                               title: text,
                                               color: btnColor,
-                                              onPressed: (){
+                                              onPressed: () {
                                                 Navigator.pushNamed(
                                                   context,
                                                   kOrderScreen,
                                                   arguments: item,
                                                 );
-                                              
                                               },
                                             )),
                                       ),
@@ -303,6 +303,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
       ),
     );
   }
+
   Map<String, Color> _orderStatus(String status) {
     //? Charachter and its color - String and button color
     switch (status) {
