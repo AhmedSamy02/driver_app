@@ -1,5 +1,6 @@
 import 'package:driver_app/components/application_small_appbar.dart';
 import 'package:driver_app/models/order.dart';
+import 'package:driver_app/services/send_qr_code.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
           Expanded(
             flex: 7,
             child: MobileScanner(
-              onDetect: (capture) {
-                final List<Barcode> barcodes = capture.barcodes;
+              onDetect: (capture) async {
+                final barcode = capture.barcodes[0];
 
                 QuickAlert.show(
                   context: context,
@@ -41,9 +42,39 @@ class _QrScanScreenState extends State<QrScanScreen> {
                   text: 'Processing...',
                   barrierDismissible: false,
                 );
-                Future.delayed(Duration(seconds: 5), () {
-                  Navigator.pop(context);
-                });
+                String response = await SendQrCode.sendQrCode(
+                    qrCode: barcode.rawValue!,
+                    vehicleId: _order.vehicleId!,
+                    orderId: _order.orderId!);
+                if (response == 'Success') {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: 'Congratulations!',
+                    text: 'You have successfully delivered the order',
+                    confirmBtnText: 'Okay',
+                    showConfirmBtn: true,
+                    onConfirmBtnTap: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
+                } else {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: 'Error',
+                    text: response,
+                    confirmBtnText: 'Okay',
+                    showConfirmBtn: true,
+                    onConfirmBtnTap: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
+                }
               },
               controller: MobileScannerController(
                 detectionSpeed: DetectionSpeed.noDuplicates,
