@@ -18,7 +18,6 @@ class _SplashScreenState extends State<SplashScreen>
   String? nextScreen;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future(() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
