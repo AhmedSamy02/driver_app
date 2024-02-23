@@ -23,11 +23,11 @@ class GetOrderDetails {
               options: Options(
                   headers: {'Authorization': 'Bearer ${CurrentUser().token}'}))
           .timeout(const Duration(seconds: 10));
-      logger.i('response: ${response.data['details'][2]}');
       final List<Detail> data = [];
       response.data['details'].forEach((item) => {data.add(Detail.fromJson(item,mainStatus: response.data['mainStatus']))});
       return data;
     } on DioException catch (error) {
+      logger.e('message: ${error.toString()}');
       throw error;
     } on TimeoutException catch (error) {
       throw error;

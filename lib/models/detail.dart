@@ -23,25 +23,24 @@ class Detail {
   });
 
   factory Detail.fromJson(Map<String, dynamic> json, {String? mainStatus}) {
-    logger.d('json: $json');
     return Detail(
       mainStatus: mainStatus,
       status: json['status'],
       estimatedD: json['estimatedD'] == null
           ? null
-          : DateFormat('E,d MMM yyyy HH:mm:ss')
+          : DateFormat('E,d MMM yyyy HH:mm a')
               .format(DateTime.parse(json['estimatedD'])),
       estimatedA: json['estimatedA'] == null
           ? null
-          : DateFormat('E,d MMM yyyy HH:mm:ss')
+          : DateFormat('E,d MMM yyyy HH:mm a')
               .format(DateTime.parse(json['estimatedA'])),
       actualD: json['actualD'] == null
           ? null
-          : DateFormat('E,d MMM yyyy HH:mm:ss')
+          : DateFormat('E,d MMM yyyy HH:mm a')
               .format(DateTime.parse(json['actualD'])),
       actualA: json['actualA'] == null
           ? null
-          : DateFormat('E,d MMM yyyy HH:mm:ss')
+          : DateFormat('E,d MMM yyyy HH:mm a')
               .format(DateTime.parse(json['actualA'])),
       duration: json['duration'],
       message: json['message'],

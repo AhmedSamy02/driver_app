@@ -83,12 +83,16 @@ class _OrderScreenState extends State<OrderScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: _whichRichText(char, item),
-                            leading: Text(
-                              char,
-                              style: GoogleFonts.beVietnamPro(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 48,
-                                color: charColor,
+                            leading: SizedBox(
+                              width: 50,
+                              child: Text(
+                                char,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.beVietnamPro(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 48,
+                                  color: charColor,
+                                ),
                               ),
                             ),
                           );
