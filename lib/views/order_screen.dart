@@ -1,4 +1,5 @@
 import 'package:driver_app/components/back_button_with_text.dart';
+import 'package:driver_app/components/failed_richtext.dart';
 import 'package:driver_app/constants.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +62,13 @@ class _OrderScreenState extends State<OrderScreen> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      subtitle: CompletedPendingRichText(order: _order,completed: false,),
+                      subtitle: const FailedRichText(message: 'Failed to deliver'),
                       leading: Text(
-                        'W',
+                        'F',
                         style: GoogleFonts.beVietnamPro(
                           fontWeight: FontWeight.bold,
                           fontSize: 48,
-                          color: kWorkingColor,
+                          color: kFailedColor,
                         ),
                       ),
                     );
@@ -132,161 +133,5 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-class CompletedPendingRichText extends StatelessWidget {
-  const CompletedPendingRichText({
-    super.key,
-    required this.order,
-    required this.completed,
-  });
 
-  final Order order;
-  final bool completed;
 
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-              text: completed?'\nEstimated Deprature Time: ':'\nEstimated Arrival Time: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: '12:00 PM',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-          TextSpan(
-              text:completed? '\nActual Deprature Time: ': '\nActual Arrival Time: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: completed?'12:00 PM':'-',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-        ],
-      ),
-    );
-  }
-}
-
-class WorkingRichText extends StatelessWidget {
-  const WorkingRichText({
-    super.key,
-    required Order order,
-  }) : _order = order;
-
-  final Order _order;
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-              text: '\nDuration: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: '50 minutes',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-          TextSpan(
-              text: '\nEstimated Deprature Time: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: '12:00 PM',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-          TextSpan(
-              text: '\nActual Deprature Time: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: '-',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-          TextSpan(
-              text: '\nEstimated Arrival Time: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: '12:00 PM',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-          TextSpan(
-              text: '\nActual Arrival Time: ',
-              style: GoogleFonts.roboto(
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-              children: [
-                TextSpan(
-                  text: '12:12 PM',
-                  style: GoogleFonts.roboto(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-        ],
-      ),
-    );
-  }
-}
