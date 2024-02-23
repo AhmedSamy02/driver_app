@@ -1,8 +1,6 @@
-import 'package:driver_app/constants.dart';
 import 'package:intl/intl.dart';
 
 class Detail {
-  String? mainStatus;
   String? status;
   String? estimatedD;
   String? estimatedA;
@@ -12,7 +10,6 @@ class Detail {
   String? message;
 
   Detail({
-    this.mainStatus,
     this.status,
     this.estimatedD,
     this.estimatedA,
@@ -24,7 +21,6 @@ class Detail {
 
   factory Detail.fromJson(Map<String, dynamic> json, {String? mainStatus}) {
     return Detail(
-      mainStatus: mainStatus,
       status: json['status'],
       estimatedD: json['estimatedD'] == null
           ? null
@@ -49,7 +45,6 @@ class Detail {
 
   Map<String, dynamic> toJson() {
     return {
-      'mainStatus': mainStatus,
       'status': status,
       'estimatedD': estimatedD,
       'estimatedA': estimatedA,
