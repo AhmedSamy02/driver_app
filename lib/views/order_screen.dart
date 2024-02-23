@@ -1,25 +1,90 @@
 import 'package:driver_app/components/back_button_with_text.dart';
+import 'package:driver_app/constants.dart';
 import 'package:driver_app/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
 
   @override
+  State<OrderScreen> createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  double _minHeight = 0.0;
+  double _maxHeight = 0.0;
+  Order _order = Order();
+  @override
+  void didChangeDependencies() {
+    _minHeight = MediaQuery.of(context).size.height * 3 / 16;
+    _maxHeight = MediaQuery.of(context).size.height * 7 / 8;
+    _order = ModalRoute.of(context)!.settings.arguments as Order;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var order = ModalRoute.of(context)!.settings.arguments as Order;
     return Scaffold(
       body: SlidingUpPanel(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
         panelBuilder: () {
-          return Center(
-            child: Text("This is the sliding Widget"),
+          return Column(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.cyan,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                height: _minHeight,
+              ),
+              SizedBox(
+                height: _maxHeight - _minHeight,
+                child: ListView.separated(
+                  padding: const EdgeInsets.only(top: 30),
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                        _order.to!,
+                        style: GoogleFonts.roboto(
+                          fontSize: 17,
+                          color: Colors.black54,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: CompletedPendingRichText(order: _order,completed: false,),
+                      leading: Text(
+                        'W',
+                        style: GoogleFonts.beVietnamPro(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 48,
+                          color: kWorkingColor,
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => const Divider(
+                    thickness: 1.5,
+                    indent: 20,
+                    endIndent: 20,
+                  ),
+                  itemCount: 5,
+                ),
+              ),
+            ],
           );
         },
-        maxHeight: MediaQuery.of(context).size.height * 7 / 8,
-        minHeight: MediaQuery.of(context).size.height * 1 / 8,
+        maxHeight: _maxHeight,
+        minHeight: _minHeight,
         body: Column(
           children: [
             Expanded(
@@ -62,6 +127,165 @@ class OrderScreen extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CompletedPendingRichText extends StatelessWidget {
+  const CompletedPendingRichText({
+    super.key,
+    required this.order,
+    required this.completed,
+  });
+
+  final Order order;
+  final bool completed;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+              text: completed?'\nEstimated Deprature Time: ':'\nEstimated Arrival Time: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: '12:00 PM',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+          TextSpan(
+              text:completed? '\nActual Deprature Time: ': '\nActual Arrival Time: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: completed?'12:00 PM':'-',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+        ],
+      ),
+    );
+  }
+}
+
+class WorkingRichText extends StatelessWidget {
+  const WorkingRichText({
+    super.key,
+    required Order order,
+  }) : _order = order;
+
+  final Order _order;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+              text: '\nDuration: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: '50 minutes',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+          TextSpan(
+              text: '\nEstimated Deprature Time: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: '12:00 PM',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+          TextSpan(
+              text: '\nActual Deprature Time: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: '-',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+          TextSpan(
+              text: '\nEstimated Arrival Time: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: '12:00 PM',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+          TextSpan(
+              text: '\nActual Arrival Time: ',
+              style: GoogleFonts.roboto(
+                fontWeight: FontWeight.w700,
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              children: [
+                TextSpan(
+                  text: '12:12 PM',
+                  style: GoogleFonts.roboto(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+        ],
       ),
     );
   }

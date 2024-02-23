@@ -152,13 +152,15 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   pagingController: _pagingController,
                   builderDelegate: PagedChildBuilderDelegate<Order>(
                     itemBuilder: (context, item, index) {
-                      Map<String, Color> stat = _orderStatus(item.status!);
+                      Map<String, Color> stat = orderStatus(item.status!);
                       var charColor = stat.values.first;
                       var btnColor = stat.values.last;
                       var char = stat.keys.first[0];
                       var text = stat.keys.last;
                       return GestureDetector(
                         onTap: () {
+                          var order = item;
+                          order.vehicleId = _vehicleId;
                           Navigator.pushNamed(
                             context,
                             kOrderScreen,
@@ -304,17 +306,5 @@ class _OrderListScreenState extends State<OrderListScreen> {
     );
   }
 
-  Map<String, Color> _orderStatus(String status) {
-    //? Charachter and its color - String and button color
-    switch (status) {
-      case 'Pending':
-        return {'P': Colors.grey, 'Start': Colors.blueAccent[700]!};
-      case 'Completed':
-        return {'C': kCompletedColor, 'Review': kCompletedColor};
-      case 'Failed':
-        return {'F': kFailedColor, 'Review': kFailedColor};
-      default:
-        return {'W': kWorkingColor, 'Details': Colors.yellow[800]!};
-    }
-  }
+  
 }

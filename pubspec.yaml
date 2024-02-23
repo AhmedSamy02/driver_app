@@ -39,5 +39,6 @@ flutter:
   assets:
     - google_fonts/roboto/
     - google_fonts/pt_serif/
+    - google_fonts/be_vietnam/
     - assets/images/
     - assets/videos/

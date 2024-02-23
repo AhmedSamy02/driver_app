@@ -18,7 +18,19 @@ bool validateEmail(String text) {
     return false;
   }
 }
-
+Map<String, Color> orderStatus(String status) {
+  //? Charachter and its color - String and button color
+  switch (status) {
+    case 'Pending':
+      return {'P': Colors.grey, 'Start': Colors.blueAccent[700]!};
+    case 'Completed':
+      return {'C': kCompletedColor, 'Review': kCompletedColor};
+    case 'Failed':
+      return {'F': kFailedColor, 'Review': kFailedColor};
+    default:
+      return {'W': kWorkingColor, 'Details': Colors.yellow[800]!};
+  }
+}
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
