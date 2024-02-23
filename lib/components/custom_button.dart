@@ -19,6 +19,10 @@ class CustomButton extends StatelessWidget {
           elevation: 0,
           shadowColor: Colors.transparent,
           backgroundColor: color,
+          fixedSize: const Size.fromHeight(20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
           padding: const EdgeInsets.all(5)),
       child: Stack(
         alignment: Alignment.center,

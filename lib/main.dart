@@ -49,6 +49,7 @@ class MainApp extends StatelessWidget {
             return PageTransition(
                 duration: const Duration(milliseconds: 600),
                 child: const OrderScreen(),
+                settings: settings,
                 type: PageTransitionType.fade);
           default:
             return null;
