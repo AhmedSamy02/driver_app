@@ -12,6 +12,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -79,15 +80,32 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: TextButton(
-                onPressed: () async {
-                  setState(() {
-                    _loading = true;
-                  });
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.clear();
-                  CurrentUser().token = null;
-                  Navigator.pushReplacementNamed(context, kLoginScreen);
+                onPressed: () {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.confirm,
+                    text: 'Do you want to logout',
+                    confirmBtnText: 'Yes',
+                    cancelBtnText: 'No',
+                    onConfirmBtnTap: () async {
+                      setState(() {
+                        _loading = true;
+                      });
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.clear();
+                      CurrentUser().token = null;
+                      Navigator.pop(context);
+                      Future.delayed(const Duration(seconds: 2), () {
+                        
+                        Navigator.pushReplacementNamed(context, kLoginScreen);
+                      });
+                    },
+                    onCancelBtnTap: () {
+                      Navigator.pop(context);
+                    },
+                    confirmBtnColor: Colors.blueAccent[700]!,
+                  );
                 },
                 child: Text(
                   'Logout',
@@ -235,6 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
